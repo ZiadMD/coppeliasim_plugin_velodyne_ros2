@@ -19,7 +19,7 @@ bool ROS_server::initialize()
 
 
 	// Enable the publishers:
-    pointCloud_publisher=node->advertise<sensor_msgs::PointCloud2>("/velodyne_points",1);
+    pointCloud_publisher=node->advertise<sensor_msgs::PointCloud2>("/sensor/velodyne",1);
 
 	return(true);
 }
