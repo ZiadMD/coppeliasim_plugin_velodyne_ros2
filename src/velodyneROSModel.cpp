@@ -6,7 +6,7 @@
 #define PI_VAL (3.14159265f)
 
 // if you want to use /velodyne_points topic locally, put it true
-#define _B_LOCALLY false
+#define _B_LOCALLY true
 
 int CVelodyneROSModel::_nextVelodyneHandle=0;
 
