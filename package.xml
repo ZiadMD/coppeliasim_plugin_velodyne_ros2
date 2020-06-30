@@ -1,6 +1,6 @@
 <package>
-  <name>vrep_plugin_velodyne</name>
-  <description>V-REP plugin Velodyne</description>
+  <name>coppeliasim_plugin_velodyne</name>
+  <description>Coppeliasim/V-REP plugin Velodyne</description>
   <maintainer email="TODO@TODO.com">TODO</maintainer>
   <version>0.0.1</version>
   <author>TODO</author>

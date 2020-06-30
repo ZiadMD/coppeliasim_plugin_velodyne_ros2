@@ -1,4 +1,4 @@
-#include "../include/vrep_plugin_velodyne/velodyneROSModelCont.h"
+#include "../include/coppeliasim_plugin_velodyne/velodyneROSModelCont.h"
 #include "../include/v_repLib.h"
 
 CVelodyneROSModelCont::CVelodyneROSModelCont()

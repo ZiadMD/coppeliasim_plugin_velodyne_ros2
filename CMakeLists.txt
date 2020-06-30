@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(vrep_plugin_velodyne)
+project(coppeliasim_plugin_velodyne)
 
 set (CMAKE_CXX_STANDARD 11)
 
@@ -36,10 +36,10 @@ add_library(
             include/v_repLib.h
             include/scriptFunctionData.h
             include/scriptFunctionDataItem.h
-            include/vrep_plugin_velodyne/ros_server_velodyne.h
-            include/vrep_plugin_velodyne/velodyneROSModel.h
-            include/vrep_plugin_velodyne/velodyneROSModelCont.h
-            include/vrep_plugin_velodyne/v_repExtVelodyneROS.h)
+            include/coppeliasim_plugin_velodyne/ros_server_velodyne.h
+            include/coppeliasim_plugin_velodyne/velodyneROSModel.h
+            include/coppeliasim_plugin_velodyne/velodyneROSModelCont.h
+            include/coppeliasim_plugin_velodyne/v_repExtVelodyneROS.h)
 
 add_dependencies(v_repExtRosVelodyne ${catkin_EXPORTED_TARGETS})
 target_link_libraries(v_repExtRosVelodyne

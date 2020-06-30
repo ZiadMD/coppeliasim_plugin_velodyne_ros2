@@ -1,4 +1,4 @@
-#include "../include/vrep_plugin_velodyne/ros_server_velodyne.h"
+#include "../include/coppeliasim_plugin_velodyne/ros_server_velodyne.h"
 #include "../include/v_repLib.h"
 
 ros::NodeHandle* ROS_server::node = NULL;
@@ -19,7 +19,7 @@ bool ROS_server::initialize()
 
 
 	// Enable the publishers:
-    pointCloud_publisher=node->advertise<sensor_msgs::PointCloud2>("/sensor/velodyne",1);
+    pointCloud_publisher=node->advertise<sensor_msgs::PointCloud2>("/velodyne/points2", 1);
 
 	return(true);
 }

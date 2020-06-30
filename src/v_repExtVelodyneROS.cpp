@@ -1,10 +1,10 @@
-#include "../include/vrep_plugin_velodyne/v_repExtVelodyneROS.h"
+#include "../include/coppeliasim_plugin_velodyne/v_repExtVelodyneROS.h"
 #include "../include/scriptFunctionData.h"
 #include "../include/v_repLib.h"
 #include <iostream>
-#include "../include/vrep_plugin_velodyne/velodyneROSModelCont.h"
+#include "../include/coppeliasim_plugin_velodyne/velodyneROSModelCont.h"
 
-#include "../include/vrep_plugin_velodyne/ros_server_velodyne.h"
+#include "../include/coppeliasim_plugin_velodyne/ros_server_velodyne.h"
 #include <iostream>
 
 #ifdef _WIN32

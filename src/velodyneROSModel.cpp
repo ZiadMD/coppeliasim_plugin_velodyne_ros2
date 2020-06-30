@@ -1,7 +1,7 @@
-#include "../include/vrep_plugin_velodyne/velodyneROSModel.h"
+#include "../include/coppeliasim_plugin_velodyne/velodyneROSModel.h"
 #include "../include/v_repLib.h"
 #include <math.h>
-#include "../include/vrep_plugin_velodyne/ros_server_velodyne.h"
+#include "../include/coppeliasim_plugin_velodyne/ros_server_velodyne.h"
 
 #define PI_VAL (3.14159265f)
 
@@ -40,7 +40,7 @@ CVelodyneROSModel::CVelodyneROSModel(const int visionSensorHandles[4],float freq
     _pubVelodyne =ROS_server::getPublisher();
 
     //initialize the fixed fields of the output PointCloud2 message
-    _buffer.header.frame_id="velodyne";
+    _buffer.header.frame_id="velodyneVPL";
     _buffer.height=1; //unordered data
     _buffer.fields.resize(3); //convert x/y/z to fields
     _buffer.fields[0].name = "x"; _buffer.fields[1].name = "y"; _buffer.fields[2].name = "z";
