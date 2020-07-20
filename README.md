@@ -58,7 +58,3 @@ if (sim_call_type==sim.syscb_cleanup) then
     simExtVelodyneROS_destroyVelodyneROSModel(_h)
 end
 ```
-
-TODO:
-- Parametrize frames
-- Publish local pointcloud
