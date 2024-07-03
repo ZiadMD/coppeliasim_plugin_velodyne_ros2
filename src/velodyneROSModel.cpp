@@ -41,7 +41,7 @@ CVelodyneROSModel::CVelodyneROSModel(const int visionSensorHandles[4],float freq
 
     //initialize the fixed fields of the output PointCloud2 message
     //_buffer.header.frame_id="espeleo_robo/os1_sensor";
-    _buffer.header.frame_id="os1_sensor";
+    _buffer.header.frame_id="velodyne";
     _buffer.height=1; //unordered data
     _buffer.fields.resize(3); //convert x/y/z to fields
     _buffer.fields[0].name = "x"; _buffer.fields[1].name = "y"; _buffer.fields[2].name = "z";
@@ -273,42 +273,42 @@ bool CVelodyneROSModel::handle(float dt)
             }
         }//Finished detecting points
 
-        if (_displayPts&&(_displayPtsXyz.size()>0))
-        {
-            char zeroCol[12]={0,0,0,0,0,0,0,0,0,0,0,0};
-            int options=2;
-            if (_emissivePts)
-                options|=4;
-            if (_displayOnlyCurrent)
-            {
-                if (int(_displayPtsXyz.size())>existingDisplayPointsSize)
-                {
-                    // Using the new or old pt cloud functionality?
-                    if (_newPtCloudHandle>=0)
-                        simInsertPointsIntoPointCloud(_newPtCloudHandle,2,&_displayPtsXyz[existingDisplayPointsSize],((int)_displayPtsXyz.size()/3)-existingDisplayPointsSize/3,&_displayPtsCol[existingDisplayPointsSize],0);
-                    else
-                        _ptCloudHandle=simAddPointCloud(0,255,-1,options,_pointSize,((int)_displayPtsXyz.size()/3)-existingDisplayPointsSize/3,&_displayPtsXyz[existingDisplayPointsSize],zeroCol,(char*)&_displayPtsCol[existingDisplayPointsSize],0);
-                }
-            }
-            else
+//         if (_displayPts&&(_displayPtsXyz.size()>0))
+//         {
+//             char zeroCol[12]={0,0,0,0,0,0,0,0,0,0,0,0};
+//             int options=2;
+//             if (_emissivePts)
+//                 options|=4;
+//             if (_displayOnlyCurrent)
+//             {
+//                 if (int(_displayPtsXyz.size())>existingDisplayPointsSize)
+//                 {
+//                     // Using the new or old pt cloud functionality?
+//                     if (_newPtCloudHandle>=0)
+//                         simInsertPointsIntoPointCloud(_newPtCloudHandle,2,&_displayPtsXyz[existingDisplayPointsSize],((int)_displayPtsXyz.size()/3)-existingDisplayPointsSize/3,&_displayPtsCol[existingDisplayPointsSize],0);
+//                     else
+//                         _ptCloudHandle=simAddPointCloud(0,255,-1,options,_pointSize,((int)_displayPtsXyz.size()/3)-existingDisplayPointsSize/3,&_displayPtsXyz[existingDisplayPointsSize],zeroCol,(char*)&_displayPtsCol[existingDisplayPointsSize],0);
+//                 }
+//             }
+//             else
 
-            {
-                    // Using the new or old pt cloud functionality?
-                    if (_newPtCloudHandle>=0)
-                        simInsertPointsIntoPointCloud(_newPtCloudHandle,2,&_displayPtsXyz[0],(int)_displayPtsXyz.size()/3,&_displayPtsCol[0],0);
-                    else
-                        _ptCloudHandle=simAddPointCloud(0,255,-1,options,_pointSize,(int)_displayPtsXyz.size()/3,&_displayPtsXyz[0],zeroCol,(char*)&_displayPtsCol[0],0);
-            }
-/*
-            if (_displayOnlyCurrent)
-            {
-                if (int(_displayPtsXyz.size())>existingDisplayPointsSize)
-                    _ptCloudHandle=simAddPointCloud(0,255,-1,options,_pointSize,((int)_displayPtsXyz.size()/3)-existingDisplayPointsSize/3,&_displayPtsXyz[existingDisplayPointsSize],zeroCol,(char*)&_displayPtsCol[existingDisplayPointsSize],0);
-            }
-            else
-                _ptCloudHandle=simAddPointCloud(0,255,-1,options,_pointSize,(int)_displayPtsXyz.size()/3,&_displayPtsXyz[0],zeroCol,(char*)&_displayPtsCol[0],0);
-                */
-        }
+//             {
+//                     // Using the new or old pt cloud functionality?
+//                     if (_newPtCloudHandle>=0)
+//                         simInsertPointsIntoPointCloud(_newPtCloudHandle,2,&_displayPtsXyz[0],(int)_displayPtsXyz.size()/3,&_displayPtsCol[0],0);
+//                     else
+//                         _ptCloudHandle=simAddPointCloud(0,255,-1,options,_pointSize,(int)_displayPtsXyz.size()/3,&_displayPtsXyz[0],zeroCol,(char*)&_displayPtsCol[0],0);
+//             }
+// /*
+//             if (_displayOnlyCurrent)
+//             {
+//                 if (int(_displayPtsXyz.size())>existingDisplayPointsSize)
+//                     _ptCloudHandle=simAddPointCloud(0,255,-1,options,_pointSize,((int)_displayPtsXyz.size()/3)-existingDisplayPointsSize/3,&_displayPtsXyz[existingDisplayPointsSize],zeroCol,(char*)&_displayPtsCol[existingDisplayPointsSize],0);
+//             }
+//             else
+//                 _ptCloudHandle=simAddPointCloud(0,255,-1,options,_pointSize,(int)_displayPtsXyz.size()/3,&_displayPtsXyz[0],zeroCol,(char*)&_displayPtsCol[0],0);
+//                 */
+//         }
 
         lastScanAngle=fmod(lastScanAngle+scanRange,2.0f*PI_VAL);
 
