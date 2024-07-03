@@ -7,6 +7,8 @@ The points are global (relative to the odom frame). This plugin is meant to be u
 
 The reason why the point cloud is published globally is because at every simulation step the points are converted to the origin frame in order to correct the mismatch due to the movement of the vehicle. You can modify the plugin or simply create a node that reads this point cloud and converts it to the base_link (or whatever the velodyne frame is) frame.
 
+Note: Update to CoppeliaSim 4.7.0
+
 ## Installation
 
 After cloning this repository and compiling with `catkin make`, the plugin lib needs to be copied into the CoppeliaSim folder:
