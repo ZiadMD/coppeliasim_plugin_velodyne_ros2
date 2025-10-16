@@ -381,9 +381,22 @@ Please include:
 
 ## Credits
 
-- Original ROS 1 plugin: [ITVRoC/coppeliasim_plugin_velodyne](https://github.com/ITVRoC/coppeliasim_plugin_velodyne)
-- ROS 2 migration and improvements: ZiadMD
-- CoppeliaSim/V-REP: Coppelia Robotics
+### Original Work
+
+This project is based on the original ROS 1 Velodyne plugin developed by ITVRoC:
+**[ITVRoC/coppeliasim_plugin_velodyne](https://github.com/ITVRoC/coppeliasim_plugin_velodyne)**
+
+The original repository provided the foundation for CoppeliaSim Velodyne sensor integration with ROS. This fork updates and migrates that work to ROS 2, addressing compatibility with modern ROS distributions and CoppeliaSim versions.
+
+### Contributors
+
+- **Original ROS 1 Plugin**: [ITVRoC](https://github.com/ITVRoC) - Initial implementation and core functionality
+- **ROS 2 Migration**: ZiadMD - Migration to ROS 2, documentation updates, and experimental Lua scripts
+- **CoppeliaSim/V-REP**: Coppelia Robotics - Simulation platform
+
+### Acknowledgments
+
+Special thanks to the ITVRoC team for their original work on the CoppeliaSim Velodyne plugin. Without their foundation, this ROS 2 migration would not have been possible.
 
 ## References
 
