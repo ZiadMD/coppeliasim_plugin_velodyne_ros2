@@ -1,3 +1,27 @@
+--[[
+    ⚠️ EXPERIMENTAL SCRIPT - USE WITH CAUTION ⚠️
+    
+    This is an experimental Lua script designed to be used inside CoppeliaSim.
+    
+    IMPORTANT NOTES:
+    - This script is NOT fully functional and may cause crashes
+    - Currently in development and testing phase
+    - May conflict with the simROS2 plugin
+    - Use at your own risk
+    
+    PURPOSE:
+    This script should be attached to the Velodyne sensor model in CoppeliaSim
+    to enable ROS2 PointCloud2 publishing functionality.
+    
+    USAGE:
+    1. Open your CoppeliaSim scene
+    2. Select the Velodyne model base object
+    3. Add this script as a child script (non-threaded)
+    4. Configure the parameters below as needed
+    
+    See the /examples folder for usage snippets and configuration examples.
+--]]
+
 -- Velodyne HDL-32E ROS2 Implementation in Pure Lua
 -- This script uses CoppeliaSim's built-in Velodyne functions with ROS2 publishing
 -- Main script attached to the Velodyne model base

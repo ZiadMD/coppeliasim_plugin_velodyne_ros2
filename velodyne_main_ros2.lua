@@ -1,3 +1,27 @@
+--[[
+    ⚠️ EXPERIMENTAL SCRIPT - USE WITH CAUTION ⚠️
+    
+    This is an experimental Lua script designed to be used inside CoppeliaSim.
+    
+    IMPORTANT NOTES:
+    - This script is NOT fully functional and may cause crashes
+    - Currently in development and testing phase
+    - May conflict with the simROS2 plugin
+    - Use at your own risk
+    
+    PURPOSE:
+    Main script for Velodyne HDL-32E ROS2 integration.
+    Attach this to the Velodyne base model in CoppeliaSim.
+    
+    USAGE:
+    1. Open your CoppeliaSim scene with a Velodyne model
+    2. Select the Velodyne base object
+    3. Add this script as a child script (non-threaded)
+    4. Ensure the 4 vision sensors have the sensor script attached
+    
+    See the /examples folder for complete setup instructions.
+--]]
+
 -- Velodyne HDL-32E ROS2 Main Script
 -- Attach this to the Velodyne base model
 -- The 4 vision sensors handle their own data collection via sysCall_vision

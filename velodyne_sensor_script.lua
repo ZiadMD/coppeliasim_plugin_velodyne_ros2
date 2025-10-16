@@ -1,3 +1,27 @@
+--[[
+    ⚠️ EXPERIMENTAL SCRIPT - USE WITH CAUTION ⚠️
+    
+    This is an experimental Lua script designed to be used inside CoppeliaSim.
+    
+    IMPORTANT NOTES:
+    - This script is NOT fully functional and may cause crashes
+    - Currently in development and testing phase
+    - May conflict with the simROS2 plugin
+    - Use at your own risk
+    
+    PURPOSE:
+    Vision sensor customization script for Velodyne ROS2 integration.
+    This script must be attached to EACH of the 4 vision sensors in the Velodyne model.
+    
+    USAGE:
+    1. Open your CoppeliaSim scene with a Velodyne model
+    2. Select each vision sensor (sensor0, sensor1, sensor2, sensor3)
+    3. Add this script as a customization script to each sensor
+    4. Ensure the main script is attached to the Velodyne base
+    
+    See the /examples folder for complete setup instructions.
+--]]
+
 -- Vision Sensor Customization Script
 -- Attach this script to EACH of the 4 vision sensors in the Velodyne model
 -- This handles the depth data processing for each sensor
