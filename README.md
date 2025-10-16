@@ -1,31 +1,40 @@
 # coppeliasim_plugin_velodyne
 
-This CoppeliaSim / V-REP plugin that publishes a full revolution of points in PointCloud2 into ROS under the topic /velodyne_points.
+This CoppeliaSim plugin publishes a full revolution of points in PointCloud2 format to ROS 2 under the topic `/velodyne_points`.
 Instead of serializing the Velodyne data directly with Non-threaded scripts, this plugin uses C++ to greatly increase publication speed.
 
 The points are global (relative to the odom frame). This plugin is meant to be used with sensors like the built-in model velodyne VPL-16.
 
 The reason why the point cloud is published globally is because at every simulation step the points are converted to the origin frame in order to correct the mismatch due to the movement of the vehicle. You can modify the plugin or simply create a node that reads this point cloud and converts it to the base_link (or whatever the velodyne frame is) frame.
 
-Note: Update to CoppeliaSim 4.7.0
+**Note:** This project has been migrated to ROS 2 and uses colcon build system. Compatible with CoppeliaSim 4.7.0+.
 
 ## Installation
 
-After cloning this repository and compiling with `catkin make`, the plugin lib needs to be copied into the CoppeliaSim folder:
+After cloning this repository into your ROS 2 workspace, build the project with colcon:
 
 ```sh
-$ cp ~/catkin_ws/devel/.private/coppeliasim_plugin_velodyne/lib/libv_repExtRosVelodyne.so $COPPELIASIM_ROOT_DIR
+cd ~/ros2_ws  # or your workspace directory
+colcon build --packages-select coppeliasim_plugin_velodyne
+source install/setup.zsh
+```
+
+The plugin library needs to be copied into the CoppeliaSim folder:
+
+```sh
+$ cp ~/ros2_ws/install/coppeliasim_plugin_velodyne/lib/libsimExtVelodyneROS2.so $COPPELIASIM_ROOT_DIR
 ```
 
 ## Node configuration 
 
-- Edit `src/ros_server_velodyne.cpp:22` to define the published topic name. Default: `/velodyne/points2`. 
-- Edit `src/velodyneROSModel.cpp:43` to define the frame ID of the published pointcloud. Default: `os1_sensor` (already updated for the EspeleoRobô TF tree, package = espeleo_description).
+- Edit `src/ros_server_velodyne.cpp` to define the published topic name. Default: `/velodyne/points2`. 
+- Edit `src/velodyneROSModel.cpp` to define the frame ID of the published pointcloud. Default: `os1_sensor`.
 
 
-## CoppeliaSim / VREP sensor configuration
+## CoppeliaSim sensor configuration
 
-This is a sample configuration for the stock Velodyne VPL16:
+This is a sample Lua script configuration for the stock Velodyne VPL16 sensor.
+For ROS 2 integration, see the `velodyne_ros2_lua.lua` and related Lua scripts in the package.
 
 ```
 if (sim_call_type==sim.syscb_init) then
@@ -60,3 +69,11 @@ if (sim_call_type==sim.syscb_cleanup) then
     simExtVelodyneROS_destroyVelodyneROSModel(_h)
 end
 ```
+
+## TODO
+
+- [ ] Configure the project to work properly within CoppeliaSim without crashing the simROS2 plugin
+- [ ] Test compatibility with latest CoppeliaSim versions
+- [ ] Verify ROS 2 topic publishing and message format
+- [ ] Update plugin loading mechanism for ROS 2 integration
+- [ ] Document any additional dependencies or configuration steps required

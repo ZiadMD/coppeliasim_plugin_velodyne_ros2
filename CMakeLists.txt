@@ -1,32 +1,26 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.8)
 project(coppeliasim_plugin_velodyne)
 
-set (CMAKE_CXX_STANDARD 11)
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
-find_package(catkin REQUIRED COMPONENTS
-            roscpp
-            std_msgs
-            sensor_msgs
-            cmake_modules
-            message_generation
-            )
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-catkin_package(
-               CATKIN_DEPENDS roscpp rosconsole std_msgs 
-               DEPENDS roscpp rosconsole std_msgs )
+# Find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
-include_directories(include ${catkin_INCLUDE_DIRS})
+# Include directories
+include_directories(include)
 
-link_directories("/opt/ros/groovy/lib")
-link_directories("/opt/ros/hydro/lib")
-link_directories("/opt/ros/indigo/lib")
-link_directories("/opt/ros/jade/lib")
-link_directories("/opt/ros/kinetic/lib")
-link_directories("/opt/ros/melodic/lib")
-link_directories("/opt/ros/noetic/lib")
-
-add_library(
-            v_repExtRosVelodyne
+# Add library
+add_library(v_repExtRosVelodyne SHARED
             src/v_repLib.cpp
             src/ros_server_velodyne.cpp
             src/velodyneROSModel.cpp
@@ -42,16 +36,27 @@ add_library(
             include/coppeliasim_plugin_velodyne/velodyneROSModelCont.h
             include/coppeliasim_plugin_velodyne/v_repExtVelodyneROS.h)
 
-add_dependencies(v_repExtRosVelodyne ${catkin_EXPORTED_TARGETS})
+# Link dependencies
+ament_target_dependencies(v_repExtRosVelodyne
+  rclcpp
+  std_msgs
+  sensor_msgs
+)
+
 target_link_libraries(v_repExtRosVelodyne
     pthread
     dl
-    #roslib
-    rosconsole
-    rostime
-    rospack
-    roscpp_serialization
-    roscpp
-    boost_system
-   ${catkin_LIBRARIES}
 )
+
+# Install
+install(TARGETS v_repExtRosVelodyne
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+install(DIRECTORY include/
+  DESTINATION include
+)
+
+ament_package()

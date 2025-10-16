@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
-#include <ros/ros.h>
-#include <sensor_msgs/PointCloud2.h>
-#include <std_msgs/Float32MultiArray.h>
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <std_msgs/msg/float32_multi_array.hpp>
 
 class CVelodyneROSModel
 {
@@ -15,7 +15,7 @@ public:
     bool areVisionSensorsExplicitelyHandled();
     bool doAllObjectsExistAndAreVisionSensors();
     bool handle(float dt);
-    void addPointsToBuffer(std::vector<float> &pts, sensor_msgs::PointCloud2 & buff);
+    void addPointsToBuffer(std::vector<float> &pts, sensor_msgs::msg::PointCloud2 & buff);
 
 private:
     void _removePointsBetween(float lowAngle,float range);
@@ -39,9 +39,9 @@ private:
     std::vector<float> _displayPtsA;
     std::vector<unsigned char> _displayPtsCol;
 
-    sensor_msgs::PointCloud2 _buffer;
+    sensor_msgs::msg::PointCloud2 _buffer;
     float _RANGE;
-    ros::Publisher _pubVelodyne;
+    rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr _pubVelodyne;
 
     static int _nextVelodyneHandle;
 };

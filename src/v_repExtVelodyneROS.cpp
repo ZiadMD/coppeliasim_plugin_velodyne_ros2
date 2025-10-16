@@ -224,8 +224,8 @@ VREP_DLLEXPORT unsigned char v_repStart(void* reservedPointer,int reservedInt)
     // Initialize the ROS part:
     if(!ROS_server::initialize())
     {
-        std::cout << "ROS master is not running. Cannot start 'rosVelodyne' plugin.\n";
-        return (0); //If the master is not running then the plugin is not loaded.
+        std::cout << "ROS2 initialization failed. Cannot start 'rosVelodyne' plugin.\n";
+        return (0);
     }
 
     // Register the new Lua commands:

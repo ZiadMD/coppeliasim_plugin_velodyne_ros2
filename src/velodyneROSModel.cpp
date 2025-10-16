@@ -49,7 +49,7 @@ CVelodyneROSModel::CVelodyneROSModel(const int visionSensorHandles[4],float freq
     for (size_t d =0; d < _buffer.fields.size(); ++d, offset +=4)
     {
         _buffer.fields[d].offset = offset;
-        _buffer.fields[d].datatype = sensor_msgs::PointField::FLOAT32;
+        _buffer.fields[d].datatype = sensor_msgs::msg::PointField::FLOAT32;
         _buffer.fields[d].count = 1;
     }
     _buffer.point_step = offset;
@@ -319,7 +319,7 @@ bool CVelodyneROSModel::handle(float dt)
             //retVal=true; //(by default)
 
             _RANGE=0;
-            _pubVelodyne.publish(_buffer);
+            _pubVelodyne->publish(_buffer);
             _buffer.data.clear();
             _buffer.width=0;
 
@@ -372,14 +372,19 @@ void CVelodyneROSModel::_getColorFromIntensity(float intensity,unsigned char col
     col[2]=(unsigned char)(255.0f*(c[3*d+2]*(1.0f-r)+c[3*(d+1)+2]*r));
 }
 
-void CVelodyneROSModel::addPointsToBuffer(std::vector<float> & pts, sensor_msgs::PointCloud2 & buff)
+void CVelodyneROSModel::addPointsToBuffer(std::vector<float> & pts, sensor_msgs::msg::PointCloud2 & buff)
 {
     int n_points = pts.size()/3;
     int prev_width= buff.width*buff.point_step;
     buff.width += n_points;
     buff.row_step = buff.point_step*buff.width;
     buff.data.resize(buff.row_step*buff.height);
-    buff.header.stamp=ros::Time::now();
+    
+    // Get current ROS2 time
+    auto node = ROS_server::getNode();
+    if (node) {
+        buff.header.stamp = node->now();
+    }
 
     //copy data points
     for (int cp = 0; cp < n_points; ++cp)

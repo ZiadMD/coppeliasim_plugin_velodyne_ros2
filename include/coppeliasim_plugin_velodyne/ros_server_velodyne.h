@@ -1,8 +1,9 @@
 #ifndef ROS_SERVER_H
 #define ROS_SERVER_H
 
-#include <ros/ros.h>
-#include <sensor_msgs/PointCloud2.h>
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/point_cloud2.hpp>
+#include <memory>
 
 class ROS_server
 {
@@ -10,15 +11,16 @@ class ROS_server
 		static bool initialize();
 		static void shutDown();
 
-        static ros::Publisher getPublisher();
+        static rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr getPublisher();
+        static rclcpp::Node::SharedPtr getNode();
 
 	private:
         ROS_server() {}
 		
-		static ros::NodeHandle* node;
+		static rclcpp::Node::SharedPtr node;
 
         // Publishers:
-        static ros::Publisher pointCloud_publisher;
+        static rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr pointCloud_publisher;
 
 };
 
