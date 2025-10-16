@@ -1,243 +1,417 @@
 # CoppeliaSim Velodyne Plugin for ROS 2
 
+<div align="center">
+
+![Status](https://img.shields.io/badge/status-experimental-red)
+![ROS 2](https://img.shields.io/badge/ROS%202-Humble%20|%20Iron%20|%20Jazzy-blue)
+![CoppeliaSim](https://img.shields.io/badge/CoppeliaSim-4.7.0+-green)
+![License](https://img.shields.io/badge/license-Unspecified-lightgrey)
+
+</div>
+
 > ⚠️ **WARNING: EXPERIMENTAL - NOT WORKING**  
 > This project is currently in an experimental state and **does not work** at the moment. The plugin may cause crashes with the simROS2 plugin in CoppeliaSim. Use at your own risk and expect issues. Contributions and fixes are welcome!
 
-## Overview
+---
 
-This CoppeliaSim plugin publishes Velodyne LiDAR point cloud data to ROS 2 in PointCloud2 format. The plugin is designed to work with CoppeliaSim's built-in Velodyne models (VPL-16, HDL-32E, etc.) and uses C++ for high-performance data serialization and publishing.
+## 📋 Table of Contents
 
-### Key Features
+- [Overview](#overview)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [API Reference](#api-reference)
+- [Troubleshooting](#troubleshooting)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [Credits](#credits)
 
-- **ROS 2 Native**: Built with `rclcpp` and `ament_cmake`
-- **High Performance**: C++ implementation for fast point cloud processing
-- **Global Frame Publishing**: Points are published relative to the odom frame with automatic motion compensation
-- **Multiple Sensor Support**: Works with VPL-16, HDL-32E, and similar models
-- **Compatible**: CoppeliaSim 4.7.0+ and ROS 2 (Humble/Iron/Jazzy)
+---
 
-### What's New in ROS 2
+## 🎯 Overview
 
-This plugin has been migrated from ROS 1 to ROS 2 with the following changes:
-- Build system: `ament_cmake` (instead of catkin)
-- ROS client library: `rclcpp` (instead of roscpp)
-- Message namespaces: `sensor_msgs::msg::PointCloud2`
-- Modern C++14 standards
-- QoS-based publisher configuration
+This CoppeliaSim plugin enables Velodyne LiDAR point cloud publishing to ROS 2 in PointCloud2 format. Designed for CoppeliaSim's built-in Velodyne models (VPL-16, HDL-32E, etc.), it uses high-performance C++ for efficient data serialization and publishing.
 
-## Installation
+### ✨ Key Features
+
+- **🚀 ROS 2 Native** - Built with `rclcpp` and `ament_cmake`
+- **⚡ High Performance** - C++ implementation for fast point cloud processing
+- **🌍 Global Frame Publishing** - Points published relative to odom frame with automatic motion compensation
+- **🔧 Multiple Sensor Support** - Compatible with VPL-16, HDL-32E, and similar models
+- **✅ Modern Standards** - CoppeliaSim 4.7.0+ and ROS 2 (Humble/Iron/Jazzy)
+
+### 🆕 What's New in ROS 2
+
+This plugin has been migrated from ROS 1 to ROS 2 with significant improvements:
+
+| Feature | ROS 1 | ROS 2 |
+|---------|-------|-------|
+| Build System | catkin | ament_cmake |
+| Client Library | roscpp | rclcpp |
+| Message Namespace | sensor_msgs:: | sensor_msgs::msg:: |
+| C++ Standard | C++11 | C++14 |
+| Communication | Topic-based | QoS-based publishers |
+
+---
+
+## 📦 Installation
 
 ### Prerequisites
 
-- ROS 2 (Humble, Iron, Jazzy, or later)
-- CoppeliaSim 4.7.0+
-- colcon build tools
-- C++ compiler with C++14 support
+Ensure you have the following installed:
 
-### Build Instructions
+- **ROS 2** - Humble, Iron, Jazzy, or later ([Installation Guide](https://docs.ros.org/))
+- **CoppeliaSim** - Version 4.7.0 or higher ([Download](https://www.coppeliarobotics.com/))
+- **colcon** - ROS 2 build tool
+- **C++ Compiler** - With C++14 support (GCC 7+, Clang 5+)
 
-1. **Clone the repository** into your ROS 2 workspace:
-   ```bash
-   cd ~/ros2_ws/src  # or your workspace directory
-   git clone https://github.com/ZiadMD/coppeliasim_plugin_velodyne_ros2.git coppeliasim_plugin_velodyne
-   ```
+### 🔨 Build Instructions
 
-2. **Install dependencies**:
-   ```bash
-   cd ~/ros2_ws
-   rosdep install --from-paths src --ignore-src -r -y
-   ```
+**1. Clone the repository**
 
-3. **Build the package**:
-   ```bash
-   colcon build --packages-select coppeliasim_plugin_velodyne
-   source install/setup.bash  # or setup.zsh for zsh users
-   ```
-
-4. **Copy the plugin to CoppeliaSim**:
-   ```bash
-   cp ~/ros2_ws/install/coppeliasim_plugin_velodyne/lib/libv_repExtRosVelodyne.so $COPPELIASIM_ROOT_DIR
-   ```
-
-### Troubleshooting Build Issues
-
-If you encounter build errors:
 ```bash
-# Clean and rebuild
-colcon build --packages-select coppeliasim_plugin_velodyne --cmake-clean-cache
+cd ~/ros2_ws/src  # Navigate to your ROS 2 workspace
+git clone https://github.com/ZiadMD/coppeliasim_plugin_velodyne_ros2.git coppeliasim_plugin_velodyne
 ```
 
-## Configuration
+**2. Install dependencies**
 
-### Plugin Configuration
+```bash
+cd ~/ros2_ws
+rosdep install --from-paths src --ignore-src -r -y
+```
 
-- **Topic Name**: Edit `src/ros_server_velodyne.cpp` to change the published topic. Default: `/velodyne/points2`
-- **Frame ID**: Edit `src/velodyneROSModel.cpp` to set the TF frame. Default: `os1_sensor`
-- **QoS Settings**: Modify publisher QoS in `ros_server_velodyne.cpp` (default depth: 10)
+**3. Build the package**
+
+```bash
+colcon build --packages-select coppeliasim_plugin_velodyne
+source install/setup.bash  # For bash users
+# source install/setup.zsh  # For zsh users
+```
+
+**4. Install the plugin to CoppeliaSim**
+
+```bash
+cp ~/ros2_ws/install/coppeliasim_plugin_velodyne/lib/libv_repExtRosVelodyne.so $COPPELIASIM_ROOT_DIR
+```
+
+> **💡 Tip**: Set `COPPELIASIM_ROOT_DIR` in your `.bashrc` or `.zshrc`:
+> ```bash
+> export COPPELIASIM_ROOT_DIR=/path/to/coppeliasim
+> ```
+
+### 🔧 Troubleshooting Build Issues
+
+If you encounter build errors, try:
+
+```bash
+# Clean build cache and rebuild
+colcon build --packages-select coppeliasim_plugin_velodyne --cmake-clean-cache
+
+# Verify ROS 2 environment
+echo $ROS_DISTRO  # Should output: humble, iron, jazzy, etc.
+
+# Check for missing dependencies
+rosdep check --from-paths src --ignore-src
+```
+
+---
+
+## ⚙️ Configuration
+
+### Plugin Parameters
+
+Configure these settings by editing the source files before building:
+
+| Parameter | File | Default | Description |
+|-----------|------|---------|-------------|
+| Topic Name | `src/ros_server_velodyne.cpp` | `/velodyne/points2` | ROS 2 topic for point cloud |
+| Frame ID | `src/velodyneROSModel.cpp` | `os1_sensor` | TF frame for transforms |
+| QoS Depth | `src/ros_server_velodyne.cpp` | `10` | Publisher queue size |
 
 ### CoppeliaSim Scene Setup
 
-The Velodyne sensor in CoppeliaSim requires:
+The Velodyne sensor requires specific scene configuration:
+
+#### Required Components
+
 1. **Base Model** - Main Velodyne object with rotating joint
-2. **4 Vision Sensors** - Individual sensors at different angles
-3. **Scripts** - Lua scripts to interface with the plugin
+2. **4 Vision Sensors** - Positioned at 0°, 90°, 180°, 270° offsets
+3. **Lua Scripts** - Interface scripts for the plugin
 
-#### Using the C++ Plugin (Legacy)
+#### Option A: Using the C++ Plugin (Recommended for ROS 2)
 
-For the C++ plugin, use this Lua configuration in your Velodyne model script:
+Add this script to your Velodyne base model in CoppeliaSim:
 
 ```lua
-if (sim_call_type==sim.syscb_init) then
-    local visionSensorHandles={}
-    for i=1,4,1 do
-        visionSensorHandles[i]=sim.getObjectHandle('velodyneVPL_16_sensor'..i)
+function sysCall_init()
+    -- Get vision sensor handles
+    local visionSensorHandles = {}
+    for i = 1, 4 do
+        visionSensorHandles[i] = sim.getObjectHandle('velodyneVPL_16_sensor' .. i)
     end
-    local frequency=5 -- 5 Hz
-    local options=2+8 -- bit0 (1)=do not display points, 
-                -- bit1 (2)=display only current points,
-                -- bit2 (4)=returned data is polar (otherwise Cartesian), 
-                -- bit3 (8)=displayed points are emissive
-    local pointSize=2
-    local coloring_closeAndFarDistance={1,4}
-    local displayScaling=0.999
-
-    h_velodyne_sensor = sim.getObjectHandle('velodyneVPL_16')
-
-    _h=simExtVelodyneROS_createVelodyneROSModel(visionSensorHandles,frequency,options,pointSize,coloring_closeAndFarDistance,displayScaling, h_velodyne_sensor)
+    
+    -- Configuration parameters
+    local frequency = 5              -- Rotation frequency (Hz)
+    local options = 2 + 8            -- Display options bitmask
+    local pointSize = 2              -- Visualization point size
+    local coloringDistance = {1, 4}  -- Near/far color coding (meters)
+    local displayScaling = 0.999     -- Prevents z-fighting
+    
+    -- Get local frame
+    local h_velodyne_sensor = sim.getObjectHandle('velodyneVPL_16')
+    
+    -- Create Velodyne model
+    velodyneHandle = simExtVelodyneROS_createVelodyneROSModel(
+        visionSensorHandles,
+        frequency,
+        options,
+        pointSize,
+        coloringDistance,
+        displayScaling,
+        h_velodyne_sensor
+    )
 end
 
-if (sim_call_type==sim.syscb_sensing) then
-    local fullRev=simExtVelodyneROS_handleVelodyneROSModel(_h, sim.getSimulationTimeStep())
+function sysCall_sensing()
+    -- Process and publish data each simulation step
+    local fullRev = simExtVelodyneROS_handleVelodyneROSModel(
+        velodyneHandle,
+        sim.getSimulationTimeStep()
+    )
 end
 
-if (sim_call_type==sim.syscb_cleanup) then
-    simExtVelodyneROS_destroyVelodyneROSModel(_h)
+function sysCall_cleanup()
+    -- Clean up resources
+    simExtVelodyneROS_destroyVelodyneROSModel(velodyneHandle)
 end
 ```
 
-#### Using ROS 2 Lua Scripts (Experimental)
+#### Option B: Using ROS 2 Lua Scripts (Experimental)
 
-Alternative Lua scripts for direct ROS 2 integration are available in `/lua_scripts`:
-- `velodyne_main_ros2.lua` - Attach to Velodyne base model
-- `velodyne_sensor_script.lua` - Attach to each vision sensor
+Alternative pure Lua scripts are available in `/lua_scripts/`:
+- `velodyne_main_ros2.lua` - Main controller script
+- `velodyne_sensor_script.lua` - Vision sensor processing
 
-**See `/examples` folder for detailed setup instructions.**
+> 📚 **See [`/examples`](./examples) folder for detailed setup instructions and configurations**
 
-## Usage
+---
+
+## 🚀 Usage
 
 ### Starting CoppeliaSim with ROS 2
 
-**Important**: Source your ROS 2 environment before starting CoppeliaSim:
+> ⚠️ **Important**: Always source your ROS 2 environment before starting CoppeliaSim
 
 ```bash
-source /opt/ros/humble/setup.bash  # or your ROS 2 distro
+# Source ROS 2 distribution
+source /opt/ros/humble/setup.bash  # Replace 'humble' with your distro
+
+# Source your workspace
 source ~/ros2_ws/install/setup.bash
+
+# Start CoppeliaSim
 cd $COPPELIASIM_ROOT_DIR
 ./coppeliaSim.sh
 ```
 
-### Loading a Scene
+### Quick Start
 
-1. Open CoppeliaSim
-2. Load a scene containing a Velodyne sensor model
-3. Ensure the plugin loaded successfully (check console for messages)
-4. Start the simulation
+1. **Open CoppeliaSim** and load a scene with a Velodyne sensor model
+2. **Verify plugin loaded** - Check console for "Velodyne" plugin messages
+3. **Start simulation** - Click the play button ▶️
+4. **Monitor topics** - Use the commands below to verify data flow
 
 ### Monitoring ROS 2 Topics
 
 ```bash
-# List all topics
+# List all active topics
 ros2 topic list
 
-# Check topic info
+# View topic information
 ros2 topic info /velodyne/points2
 
-# Echo point cloud data (may be large!)
+# Echo point cloud data (limit to 1 message due to size)
 ros2 topic echo /velodyne/points2 --max-count 1
 
-# Check publish rate
+# Monitor publishing frequency
 ros2 topic hz /velodyne/points2
+
+# Check message bandwidth
+ros2 topic bw /velodyne/points2
 ```
 
 ### Visualizing in RViz2
 
+**Launch RViz2:**
 ```bash
 ros2 run rviz2 rviz2
 ```
 
-In RViz2:
-1. Set **Fixed Frame** to `velodyne` or `odom`
-2. Add **PointCloud2** display
-3. Set **Topic** to `/velodyne/points2`
-4. Adjust point size and color as needed
+**Configure RViz2:**
+1. Set **Fixed Frame** → `velodyne` or `odom`
+2. Click **Add** → **By topic** → `/velodyne/points2` → **PointCloud2**
+3. Adjust visualization:
+   - **Size (m)**: 0.01 - 0.05
+   - **Style**: Points or Flat Squares
+   - **Color Transformer**: Intensity or AxisColor
 
-### Verifying the Node
+### Verifying the ROS 2 Node
 
 ```bash
 # List running nodes
 ros2 node list
-# Should show: /vrep_velodyne
+# Expected output: /vrep_velodyne
 
-# Check node info
+# Get detailed node information
 ros2 node info /vrep_velodyne
+
+# View node graph
+rqt_graph
 ```
 
-## API Reference
+---
+
+## 📚 API Reference
 
 ### Lua API Functions
 
-The plugin provides three main functions callable from CoppeliaSim Lua scripts:
+The plugin exposes three main functions for CoppeliaSim Lua scripts:
 
 #### `simExtVelodyneROS_createVelodyneROSModel()`
 
-Creates and initializes a Velodyne ROS model.
+Creates and initializes a Velodyne ROS 2 model.
 
+**Syntax:**
 ```lua
 handle = simExtVelodyneROS_createVelodyneROSModel(
-    visionSensorHandles,  -- table of 4 vision sensor handles
-    frequency,            -- rotation frequency in Hz
-    options,              -- display options (bitmask)
-    pointSize,            -- point size for visualization
-    coloringDistances,    -- {near, far} distances for color coding
-    displayScaling,       -- scaling factor (typically 0.999)
-    localFrameHandle      -- handle to local reference frame
+    visionSensorHandles,  -- table: Array of 4 vision sensor handles
+    frequency,            -- number: Rotation frequency in Hz (5-20)
+    options,              -- number: Display options bitmask
+    pointSize,            -- number: Point size for visualization (1-10)
+    coloringDistances,    -- table: {near, far} distances in meters
+    displayScaling,       -- number: Scaling factor (0.95-1.0)
+    localFrameHandle      -- number: Handle to local reference frame
 )
 ```
 
-**Returns**: Integer handle to the Velodyne model, or -1 on failure.
+**Parameters:**
+- `visionSensorHandles`: Table containing exactly 4 vision sensor handles
+- `frequency`: Rotation speed in Hz (typical: 5-10 Hz)
+- `options`: Bitmask - `1`=hide points, `2`=current only, `4`=polar coords, `8`=emissive
+- `pointSize`: Visual point size (default: 2)
+- `coloringDistances`: Distance range for color coding `{near, far}`
+- `displayScaling`: Prevents z-fighting (typical: 0.999)
+- `localFrameHandle`: Reference frame for coordinate transformations
+
+**Returns:** 
+- `number`: Model handle (> 0) on success, `-1` on failure
+
+**Example:**
+```lua
+local sensors = {sensor1, sensor2, sensor3, sensor4}
+local handle = simExtVelodyneROS_createVelodyneROSModel(
+    sensors, 10, 10, 2, {1, 4}, 0.999, baseFrame
+)
+if handle == -1 then
+    sim.addLog(sim.verbosity_scripterrors, "Failed to create Velodyne model")
+end
+```
+
+---
 
 #### `simExtVelodyneROS_handleVelodyneROSModel()`
 
-Processes sensor data and publishes point cloud. Call this in `sysCall_sensing()`.
+Processes sensor data and publishes point cloud to ROS 2. Call this in `sysCall_sensing()`.
 
+**Syntax:**
 ```lua
 revolutionComplete = simExtVelodyneROS_handleVelodyneROSModel(
-    handle,  -- Velodyne model handle
-    dt       -- simulation time step
+    handle,  -- number: Velodyne model handle from create function
+    dt       -- number: Simulation time step (from sim.getSimulationTimeStep())
 )
 ```
 
-**Returns**: Boolean - true if a full revolution was completed.
+**Returns:**
+- `boolean`: `true` if a full 360° revolution was completed and data published
+
+**Example:**
+```lua
+function sysCall_sensing()
+    local completed = simExtVelodyneROS_handleVelodyneROSModel(
+        velodyneHandle,
+        sim.getSimulationTimeStep()
+    )
+    if completed then
+        sim.addLog(sim.verbosity_scriptinfos, "Point cloud published")
+    end
+end
+```
+
+---
 
 #### `simExtVelodyneROS_destroyVelodyneROSModel()`
 
-Cleans up and destroys the Velodyne model.
+Cleans up and destroys the Velodyne model. Call this in `sysCall_cleanup()`.
 
+**Syntax:**
 ```lua
 simExtVelodyneROS_destroyVelodyneROSModel(handle)
 ```
 
-## Published Topics
+**Parameters:**
+- `handle`: Model handle returned by create function
 
-| Topic | Type | Description |
-|-------|------|-------------|
-| `/velodyne/points2` | `sensor_msgs/msg/PointCloud2` | Point cloud data from complete revolution |
+**Example:**
+```lua
+function sysCall_cleanup()
+    simExtVelodyneROS_destroyVelodyneROSModel(velodyneHandle)
+end
+```
 
-### PointCloud2 Message Details
+---
 
-- **Frame ID**: Configurable (default: `os1_sensor` or `velodyne`)
-- **Fields**: x, y, z, intensity (FLOAT32)
-- **Publishing**: Once per complete revolution
-- **Coordinate Frame**: Global (odom frame) with motion compensation
+### Published Topics
+
+| Topic | Message Type | Description | Frequency |
+|-------|--------------|-------------|-----------|
+| `/velodyne/points2` | `sensor_msgs/msg/PointCloud2` | 3D point cloud data | Per revolution |
+
+#### PointCloud2 Message Structure
+
+```yaml
+header:
+  stamp: Current ROS 2 time
+  frame_id: "os1_sensor" or "velodyne"  # Configurable
+height: 1                                # Unordered cloud
+width: <number_of_points>
+fields:
+  - name: x
+    offset: 0
+    datatype: 7  # FLOAT32
+    count: 1
+  - name: y
+    offset: 4
+    datatype: 7  # FLOAT32
+    count: 1
+  - name: z
+    offset: 8
+    datatype: 7  # FLOAT32
+    count: 1
+  - name: intensity
+    offset: 12
+    datatype: 7  # FLOAT32
+    count: 1
+is_bigendian: false
+point_step: 16      # 4 fields × 4 bytes
+row_step: <width * point_step>
+data: <binary point cloud data>
+is_dense: false
+```
+
+**Coordinate Frame:** Global (odom frame) with automatic motion compensation
+
+---
 
 ## ROS 2 Migration Notes
 
@@ -253,168 +427,307 @@ This plugin was migrated from ROS 1. Key API changes:
 | `.publish(msg)` | `->publish(msg)` |
 | `sensor_msgs::PointCloud2` | `sensor_msgs::msg::PointCloud2` |
 
-## Troubleshooting
+## 🔍 Troubleshooting
 
-### Plugin Doesn't Load
+### Common Issues and Solutions
 
-**Symptoms**: No plugin messages in CoppeliaSim console
+<details>
+<summary><b>🔴 Plugin Doesn't Load</b></summary>
 
-**Solutions**:
-- Verify ROS 2 environment is sourced before starting CoppeliaSim
-- Check plugin file is in `$COPPELIASIM_ROOT_DIR`
-- Ensure correct library name: `libv_repExtRosVelodyne.so`
-- Check CoppeliaSim console for error messages
+**Symptoms:**
+- No plugin messages in CoppeliaSim console
+- Plugin not listed in loaded plugins
 
-### No Topics Published
+**Solutions:**
+1. Verify ROS 2 environment is sourced **before** starting CoppeliaSim
+2. Check library exists: `ls -l $COPPELIASIM_ROOT_DIR/libv_repExtRosVelodyne.so`
+3. Ensure correct library name (case-sensitive)
+4. Check CoppeliaSim console for detailed error messages
+5. Try starting CoppeliaSim from terminal to see error output
 
-**Symptoms**: `ros2 topic list` doesn't show `/velodyne/points2`
+</details>
 
-**Solutions**:
-- Check if node is running: `ros2 node list`
-- Verify Velodyne model was created (handle != -1)
-- Ensure simulation is running in CoppeliaSim
-- Check vision sensors are properly configured
+<details>
+<summary><b>🔴 No Topics Published</b></summary>
 
-### CoppeliaSim Crashes
+**Symptoms:**
+- `ros2 topic list` doesn't show `/velodyne/points2`
+- No data appearing in RViz2
 
-**Symptoms**: Application crashes during simulation
+**Solutions:**
+1. Check if node is running: `ros2 node list | grep velodyne`
+2. Verify Velodyne model was created (check handle != -1 in Lua script)
+3. Ensure simulation is **running** (not paused)
+4. Confirm vision sensors are properly configured in scene
+5. Check for Lua script errors in CoppeliaSim console
 
-**Solutions**:
-- **KNOWN ISSUE**: May conflict with simROS2 plugin
-- Try reducing rotation frequency
-- Check for memory leaks
-- Update to latest CoppeliaSim version (4.7.0+)
-- See `/examples/troubleshooting.md` for more details
+</details>
 
-### Empty Point Clouds
+<details>
+<summary><b>🔴 CoppeliaSim Crashes</b></summary>
 
-**Symptoms**: Topic publishes but no points visible in RViz2
+**Symptoms:**
+- Application crashes during simulation
+- Segmentation fault errors
 
-**Solutions**:
-- Check vision sensor settings (near/far clipping)
-- Verify objects are in sensor range
-- Check frame transforms in RViz2
-- Ensure correct TF frame is set
+**⚠️ KNOWN ISSUE:** May conflict with simROS2 plugin
 
-### Build Errors
+**Solutions:**
+1. Reduce rotation frequency (try 5 Hz instead of 10 Hz)
+2. Update to latest CoppeliaSim version (4.7.0+)
+3. Check for memory leaks with `valgrind` (Linux)
+4. Disable conflicting plugins
+5. See [`/examples/troubleshooting.md`](./examples/troubleshooting.md) for detailed guidance
 
-**Symptoms**: Compilation fails
+</details>
 
-**Solutions**:
+<details>
+<summary><b>🔴 Empty or Invalid Point Clouds</b></summary>
+
+**Symptoms:**
+- Topic publishes but no points visible in RViz2
+- Point cloud appears empty or corrupted
+
+**Solutions:**
+1. Check vision sensor settings (near/far clipping planes)
+2. Verify objects are within sensor range
+3. Check TF frame matches in RViz2 Fixed Frame setting
+4. Ensure correct frame_id is set in code
+5. Try different Color Transformer in RViz2 (Intensity, AxisColor, etc.)
+
+</details>
+
+<details>
+<summary><b>🔴 Build Errors</b></summary>
+
+**Symptoms:**
+- Compilation fails with errors
+- Missing dependencies
+
+**Solutions:**
 ```bash
-# Clean build
+# Clean build completely
 colcon build --packages-select coppeliasim_plugin_velodyne --cmake-clean-cache
 
-# Check dependencies
+# Reinstall dependencies
+rosdep update
 rosdep install --from-paths src --ignore-src -r -y
 
 # Verify ROS 2 is sourced
-echo $ROS_DISTRO
+echo $ROS_DISTRO  # Should show: humble, iron, jazzy, etc.
+echo $AMENT_PREFIX_PATH  # Should not be empty
+
+# Check compiler version
+gcc --version  # Should be 7.0 or higher
 ```
 
-## Project Structure
+</details>
+
+> 📚 **For more detailed troubleshooting**, see [`/examples/troubleshooting.md`](./examples/troubleshooting.md)
+
+---
+
+## 📁 Project Structure
 
 ```
 coppeliasim_plugin_velodyne/
-├── README.md                    # This file
-├── CMakeLists.txt              # Build configuration
-├── package.xml                 # ROS 2 package manifest
-├── include/                    # Header files
+│
+├── 📄 README.md                           # This file - Main documentation
+├── 📄 CMakeLists.txt                      # Build configuration
+├── 📄 package.xml                         # ROS 2 package manifest
+│
+├── 📂 include/                            # C++ header files
 │   └── coppeliasim_plugin_velodyne/
-│       ├── ros_server_velodyne.h
-│       └── velodyneROSModel.h
-├── src/                        # Source files
-│   ├── ros_server_velodyne.cpp
-│   ├── velodyneROSModel.cpp
-│   └── v_repExtVelodyneROS.cpp
-├── lua_scripts/                # Lua scripts for CoppeliaSim
-│   ├── README.md
-│   ├── velodyne_main_ros2.lua
-│   └── velodyne_sensor_script.lua
-└── examples/                   # Usage examples and guides
-    ├── README.md
-    ├── sample_configuration.lua
-    ├── alternative_approach.lua
-    └── troubleshooting.md
+│       ├── ros_server_velodyne.h          # ROS 2 server interface
+│       └── velodyneROSModel.h             # Velodyne model class
+│
+├── 📂 src/                                # C++ source files
+│   ├── ros_server_velodyne.cpp            # ROS 2 server implementation
+│   ├── velodyneROSModel.cpp               # Core Velodyne model logic
+│   └── v_repExtVelodyneROS.cpp            # Plugin entry point
+│
+├── 📂 lua_scripts/                        # Lua scripts for CoppeliaSim
+│   ├── README.md                          # Lua scripts documentation
+│   ├── velodyne_main_ros2.lua             # Main controller script
+│   ├── velodyne_sensor_script.lua         # Vision sensor processing
+│   └── velodyne_ros2_lua.lua              # Alternative implementation
+│
+└── 📂 examples/                           # Usage examples and guides
+    ├── README.md                          # Examples overview
+    ├── sample_configuration.lua           # Configuration examples
+    ├── alternative_approach.lua           # Simplified implementation
+    └── troubleshooting.md                 # Detailed troubleshooting guide
 ```
 
-## TODO
+---
 
-- [ ] **Critical**: Fix compatibility with simROS2 plugin to prevent crashes
-- [ ] Test with latest CoppeliaSim versions (4.7.x+)
-- [ ] Verify ROS 2 topic publishing and message format correctness
-- [ ] Add parameter server support for runtime configuration
-- [ ] Implement proper lifecycle node management
-- [ ] Add QoS configuration options
-- [ ] Support for different Velodyne models (VLP-16, HDL-64E)
-- [ ] Performance optimization and memory leak checks
-- [ ] Comprehensive testing suite
-- [ ] Documentation improvements and video tutorials
+## 📝 TODO
 
-## Known Issues
+### Critical Priority
+- [ ] 🔴 **Fix compatibility with simROS2 plugin** to prevent crashes
+- [ ] 🔴 Verify ROS 2 topic publishing and message format correctness
+- [ ] 🔴 Comprehensive testing with CoppeliaSim 4.7.x+
 
-- ⚠️ **May crash CoppeliaSim** when used with simROS2 plugin
-- Point cloud data format may not parse correctly in all cases
-- Revolution detection trigger may be unreliable
-- Performance degradation with high-frequency rotation
-- No parameter server integration yet
-- Limited error handling and recovery
+### High Priority
+- [ ] 🟠 Add parameter server support for runtime configuration
+- [ ] 🟠 Implement proper ROS 2 lifecycle node management
+- [ ] 🟠 Performance optimization and memory leak detection
+- [ ] 🟠 Support for additional Velodyne models (VLP-16, HDL-64E)
 
-## Contributing
+### Medium Priority
+- [ ] 🟡 Add configurable QoS profiles
+- [ ] 🟡 Implement comprehensive testing suite
+- [ ] 🟡 Add CI/CD pipeline (GitHub Actions)
+- [ ] 🟡 Create video tutorials and demos
 
-Contributions are welcome! If you find bugs or have improvements:
+### Low Priority
+- [ ] 🟢 Add Docker support for easy deployment
+- [ ] 🟢 Create ROS 2 launch files
+- [ ] 🟢 Add configuration file support (YAML)
+- [ ] 🟢 Improve documentation with diagrams
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/improvement`)
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+---
 
-Please include:
-- Clear description of the problem/improvement
-- Test results
-- Updated documentation if needed
+## ⚠️ Known Issues
 
-## License
+| Issue | Severity | Status |
+|-------|----------|--------|
+| May crash CoppeliaSim when used with simROS2 plugin | 🔴 Critical | Under Investigation |
+| Point cloud data format parsing errors | 🟠 High | Known |
+| Revolution detection trigger unreliable | 🟠 High | Known |
+| Performance degradation at high rotation frequencies | 🟡 Medium | Known |
+| No parameter server integration | 🟡 Medium | Planned |
+| Limited error handling and recovery | 🟢 Low | Improvement Needed |
 
-[Specify your license here]
+> **Report new issues:** [GitHub Issues](https://github.com/ZiadMD/coppeliasim_plugin_velodyne_ros2/issues)
 
-## Credits
+---
+
+## 🤝 Contributing
+
+Contributions are welcome and appreciated! Whether you're fixing bugs, adding features, or improving documentation, your help makes this project better.
+
+### How to Contribute
+
+1. **Fork** the repository
+2. **Create** a feature branch
+   ```bash
+   git checkout -b feature/amazing-improvement
+   ```
+3. **Make** your changes
+4. **Test** thoroughly
+5. **Commit** with clear messages
+   ```bash
+   git commit -m "Add: Brief description of changes"
+   ```
+6. **Push** to your fork
+   ```bash
+   git push origin feature/amazing-improvement
+   ```
+7. **Submit** a pull request
+
+### Contribution Guidelines
+
+When submitting a pull request, please include:
+
+- ✅ **Clear description** of the problem/improvement
+- ✅ **Test results** showing the changes work
+- ✅ **Updated documentation** if behavior changes
+- ✅ **Code follows** existing style and conventions
+- ✅ **Commits are** meaningful and well-organized
+
+### Areas Where Help is Needed
+
+- 🐛 Bug fixes (especially simROS2 compatibility)
+- 📚 Documentation improvements
+- 🧪 Test coverage expansion
+- 🎨 Code quality improvements
+- 🌐 Multi-platform testing
+
+---
+
+## 📜 License
+
+This project does not currently have a specified license.
+
+> **Note:** If you plan to use this in production, please clarify the licensing with the repository owner.
+
+---
+
+## 🙏 Credits
 
 ### Original Work
 
 This project is based on the original ROS 1 Velodyne plugin developed by ITVRoC:
-**[ITVRoC/coppeliasim_plugin_velodyne](https://github.com/ITVRoC/coppeliasim_plugin_velodyne)**
 
-The original repository provided the foundation for CoppeliaSim Velodyne sensor integration with ROS. This fork updates and migrates that work to ROS 2, addressing compatibility with modern ROS distributions and CoppeliaSim versions.
+**🔗 [ITVRoC/coppeliasim_plugin_velodyne](https://github.com/ITVRoC/coppeliasim_plugin_velodyne)**
+
+The original repository provided the foundation for CoppeliaSim Velodyne sensor integration with ROS. This fork migrates that work to ROS 2, addressing compatibility with modern ROS distributions and CoppeliaSim versions.
 
 ### Contributors
 
-- **Original ROS 1 Plugin**: [ITVRoC](https://github.com/ITVRoC) - Initial implementation and core functionality
-- **ROS 2 Migration**: ZiadMD - Migration to ROS 2, documentation updates, and experimental Lua scripts
-- **CoppeliaSim/V-REP**: Coppelia Robotics - Simulation platform
+| Role | Contributor | Contribution |
+|------|-------------|--------------|
+| **Original ROS 1 Plugin** | [ITVRoC](https://github.com/ITVRoC) | Initial implementation and core functionality |
+| **ROS 2 Migration** | [ZiadMD](https://github.com/ZiadMD) | Migration to ROS 2, documentation, experimental scripts |
+| **Simulation Platform** | [Coppelia Robotics](https://www.coppeliarobotics.com/) | CoppeliaSim/V-REP development |
 
 ### Acknowledgments
 
-Special thanks to the ITVRoC team for their original work on the CoppeliaSim Velodyne plugin. Without their foundation, this ROS 2 migration would not have been possible.
-
-## References
-
-- [CoppeliaSim](https://www.coppeliarobotics.com/)
-- [ROS 2 Documentation](https://docs.ros.org/)
-- [sensor_msgs/PointCloud2](https://docs.ros.org/en/api/sensor_msgs/html/msg/PointCloud2.html)
-- [Velodyne LiDAR](https://velodynelidar.com/)
-
-## Support
-
-For issues, questions, or discussions:
-- **GitHub Issues**: [Report bugs and request features](https://github.com/ZiadMD/coppeliasim_plugin_velodyne_ros2/issues)
-- **Examples & Guides**: See the `/examples` folder
-- **CoppeliaSim Forum**: [forum.coppeliarobotics.com](https://forum.coppeliarobotics.com/)
-- **ROS Answers**: [answers.ros.org](https://answers.ros.org/)
+Special thanks to the **ITVRoC team** for their original work on the CoppeliaSim Velodyne plugin. Without their solid foundation, this ROS 2 migration would not have been possible. Their contribution to the robotics community is greatly appreciated.
 
 ---
 
-**Repository**: [https://github.com/ZiadMD/coppeliasim_plugin_velodyne_ros2](https://github.com/ZiadMD/coppeliasim_plugin_velodyne_ros2)
+## 📖 References
+
+### Documentation
+- 📘 [CoppeliaSim Documentation](https://www.coppeliarobotics.com/helpFiles/)
+- 📗 [ROS 2 Documentation](https://docs.ros.org/)
+- 📕 [sensor_msgs/PointCloud2](https://docs.ros.org/en/api/sensor_msgs/html/msg/PointCloud2.html)
+- 📙 [rclcpp API Reference](https://docs.ros2.org/latest/api/rclcpp/)
+
+### Hardware & Sensors
+- 🔧 [Velodyne LiDAR Official Site](https://velodynelidar.com/)
+- 🔧 [LiDAR Point Cloud Processing](https://pcl.readthedocs.io/)
+
+### Related Projects
+- 🔗 [Original ITVRoC Plugin](https://github.com/ITVRoC/coppeliasim_plugin_velodyne)
+- 🔗 [CoppeliaSim ROS 2 Interface](https://github.com/CoppeliaRobotics/simROS2)
+
+---
+
+## 💬 Support
+
+Need help? Have questions? Here's where to find assistance:
+
+### For This Project
+- 🐛 **Bug Reports & Feature Requests**: [GitHub Issues](https://github.com/ZiadMD/coppeliasim_plugin_velodyne_ros2/issues)
+- 📚 **Examples & Setup Guides**: See the [`/examples`](./examples) folder
+- 📖 **Troubleshooting**: Check [`/examples/troubleshooting.md`](./examples/troubleshooting.md)
+
+### General ROS 2 & CoppeliaSim
+- 💬 **CoppeliaSim Forum**: [forum.coppeliarobotics.com](https://forum.coppeliarobotics.com/)
+- 💬 **ROS Answers**: [answers.ros.org](https://answers.ros.org/)
+- 💬 **ROS Discourse**: [discourse.ros.org](https://discourse.ros.org/)
+
+### Community
+- 🌐 **ROS 2 Community**: [ros.org/community](https://www.ros.org/community/)
+- 📺 **Tutorials**: Search "CoppeliaSim ROS 2" on YouTube
+
+---
+
+<div align="center">
+
+### 🔗 Quick Links
+
+**Repository**: [github.com/ZiadMD/coppeliasim_plugin_velodyne_ros2](https://github.com/ZiadMD/coppeliasim_plugin_velodyne_ros2)
+
+**Original Project**: [github.com/ITVRoC/coppeliasim_plugin_velodyne](https://github.com/ITVRoC/coppeliasim_plugin_velodyne)
 
 **Status**: 🔴 Experimental - Not Working
+
+---
+
+Made with ❤️ for the ROS 2 community
+
+</div>
