@@ -25,16 +25,18 @@ The Velodyne sensor in CoppeliaSim consists of:
 
 ### Step 2: Add Scripts to Your Model
 
+**Note:** All Lua scripts are located in the `/lua_scripts` folder.
+
 #### For the Base Model:
 1. Right-click on the Velodyne base object
 2. Select "Add" → "Associated child script" → "Non-threaded"
-3. Copy the contents of `velodyne_main_ros2.lua` into the script
+3. Copy the contents of `/lua_scripts/velodyne_main_ros2.lua` into the script
 4. Save the script
 
 #### For Each Vision Sensor:
 1. Right-click on each vision sensor (sensor0, sensor1, sensor2, sensor3)
 2. Select "Add" → "Associated customization script"
-3. Copy the contents of `velodyne_sensor_script.lua` into the script
+3. Copy the contents of `/lua_scripts/velodyne_sensor_script.lua` into the script
 4. Repeat for all 4 sensors
 
 ### Step 3: Configure Parameters

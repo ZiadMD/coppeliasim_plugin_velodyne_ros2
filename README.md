@@ -37,7 +37,15 @@ $ cp ~/ros2_ws/install/coppeliasim_plugin_velodyne/lib/libsimExtVelodyneROS2.so 
 ## CoppeliaSim sensor configuration
 
 This is a sample Lua script configuration for the stock Velodyne VPL16 sensor.
-For ROS 2 integration, see the `velodyne_ros2_lua.lua` and related Lua scripts in the package.
+
+### ROS 2 Lua Scripts
+
+For ROS 2 integration, experimental Lua scripts are available in the `/lua_scripts` folder:
+- `velodyne_main_ros2.lua` - Main script for the Velodyne base model
+- `velodyne_sensor_script.lua` - Script for individual vision sensors
+- See `/examples` folder for detailed usage instructions
+
+### Legacy Configuration Example
 
 ```
 if (sim_call_type==sim.syscb_init) then
