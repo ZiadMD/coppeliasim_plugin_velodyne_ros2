@@ -1,5 +1,8 @@
 # coppeliasim_plugin_velodyne
 
+> ⚠️ **WARNING: EXPERIMENTAL - NOT WORKING**  
+> This project is currently in an experimental state and **does not work** at the moment. The plugin may cause crashes with the simROS2 plugin in CoppeliaSim. Use at your own risk and expect issues. Contributions and fixes are welcome!
+
 This CoppeliaSim plugin publishes a full revolution of points in PointCloud2 format to ROS 2 under the topic `/velodyne_points`.
 Instead of serializing the Velodyne data directly with Non-threaded scripts, this plugin uses C++ to greatly increase publication speed.
 
